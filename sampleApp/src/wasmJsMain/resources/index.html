@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#312E81" />
+    <meta name="description" content="Persian DatePicker KMM / Compose Multiplatform sample for Android, iOS, Desktop, and Web." />
+    <title>Persian DatePicker KMM</title>
+    <style>
+        html, body, #webApp {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #0f172a;
+        }
+        body {
+            font-family: Inter, Vazirmatn, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+        canvas {
+            outline: none;
+        }
+        #loading {
+            position: fixed;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            color: #e2e8f0;
+            background: radial-gradient(circle at top, #312e81, #0f172a 58%, #020617);
+            font-size: 16px;
+            letter-spacing: -0.02em;
+            z-index: 1;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+<div id="webApp"></div>
+<div id="loading">در حال بارگذاری Persian DatePicker...</div>
+<script>
+    window.addEventListener("load", () => {
+        const loading = document.getElementById("loading");
+        if (loading) setTimeout(() => loading.remove(), 1000);
+    });
+</script>
+<script type="application/javascript" src="persian-datepicker-sample.js"></script>
+</body>
+</html>
