@@ -12,6 +12,15 @@ plugins {
     `signing`
 }
 
+val hostOs: String = System.getProperty("os.name").lowercase()
+val isMacOs: Boolean = hostOs.contains("mac")
+
+// Keep Apple targets opt-in on non-macOS hosts. This avoids resolving appleMain /
+// iosMain configurations on Windows while preserving full iOS support on macOS.
+val enableIosTargets: Boolean = providers.gradleProperty("enableIos")
+    .map(String::toBoolean)
+    .getOrElse(isMacOs)
+
 kotlin {
     explicitApi()
 
@@ -32,14 +41,16 @@ kotlin {
         browser()
     }
 
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64(),
-    ).forEach { target ->
-        target.binaries.framework {
-            baseName = "PersianDatePicker"
-            isStatic = true
+    if (enableIosTargets) {
+        listOf(
+            iosX64(),
+            iosArm64(),
+            iosSimulatorArm64(),
+        ).forEach { target ->
+            target.binaries.framework {
+                baseName = "PersianDatePicker"
+                isStatic = true
+            }
         }
     }
 
@@ -74,7 +85,6 @@ android {
         }
     }
 }
-
 
 val dokkaHtmlJar by tasks.registering(Jar::class) {
     dependsOn(tasks.named("dokkaGenerate"))
@@ -117,7 +127,6 @@ publishing {
         }
     }
 }
-
 
 signing {
     val signingKey = providers.gradleProperty("signingInMemoryKey").orNull

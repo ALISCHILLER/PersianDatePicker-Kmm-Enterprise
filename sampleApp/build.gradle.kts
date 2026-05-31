@@ -8,6 +8,17 @@ plugins {
     alias(libs.plugins.composeCompiler)
 }
 
+val hostOs: String = System.getProperty("os.name").lowercase()
+val isMacOs: Boolean = hostOs.contains("mac")
+
+// iOS / Apple targets need macOS + Xcode toolchain. On Windows they also force
+// Gradle to resolve appleMain / iosMain configurations, which is exactly what
+// caused the user's dependency-resolution failure. Keep them disabled on
+// Windows/Linux unless explicitly requested.
+val enableIosTargets: Boolean = providers.gradleProperty("enableIos")
+    .map(String::toBoolean)
+    .getOrElse(isMacOs)
+
 kotlin {
     androidTarget {
         compilerOptions {
@@ -37,38 +48,47 @@ kotlin {
         binaries.executable()
     }
 
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64(),
-    ).forEach { target ->
-        target.binaries.framework {
-            baseName = "SampleApp"
-            isStatic = true
+    if (enableIosTargets) {
+        listOf(
+            iosX64(),
+            iosArm64(),
+            iosSimulatorArm64(),
+        ).forEach { target ->
+            target.binaries.framework {
+                baseName = "SampleApp"
+                isStatic = true
+            }
         }
     }
 
     sourceSets {
-        commonMain.dependencies {
-            implementation(project(":persian-datepicker"))
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
+        val commonMain by getting {
+            dependencies {
+                implementation(project(":persian-datepicker"))
+                implementation(compose.runtime)
+                implementation(compose.foundation)
+                implementation(compose.material3)
+                implementation(compose.ui)
+            }
         }
 
-        commonTest.dependencies {
-            implementation(kotlin("test"))
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+            }
         }
 
-        androidMain.dependencies {
-            implementation(libs.androidx.activity.compose)
-            implementation(compose.preview)
+        val androidMain by getting {
+            dependencies {
+                implementation(libs.androidx.activity.compose)
+                implementation(compose.preview)
+            }
         }
 
-        desktopMain.dependencies {
-            implementation(compose.desktop.currentOs)
+        val desktopMain by getting {
+            dependencies {
+                implementation(compose.desktop.currentOs)
+            }
         }
     }
 }
@@ -82,7 +102,7 @@ android {
         minSdk = 26
         targetSdk = 36
         versionCode = 1
-        versionName = "2.4.0"
+        versionName = "2.4.3"
     }
 }
 
@@ -93,7 +113,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "PersianDatePickerKmmEnterpriseUltra"
-            packageVersion = "2.4.0"
+            packageVersion = "2.4.3"
         }
     }
 }
