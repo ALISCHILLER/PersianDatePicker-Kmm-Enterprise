@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,7 +33,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedAssistChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -44,7 +44,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -340,7 +339,7 @@ public fun PersianDateRangePicker(
 private fun PickerSurface(
     modifier: Modifier,
     colors: PersianDatePickerColors,
-    content: @Composable Column.() -> Unit,
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     Card(
         modifier = modifier
@@ -466,7 +465,11 @@ private fun CalendarMonthGrid(
                     text = label,
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Bold,
-                    color = if (config.weekConfiguration.isWeekend(day)) colors.weekendContentColor else MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = if (config.weekConfiguration.isWeekend(day)) {
+                        colors.weekendContentColor
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
                     textAlign = TextAlign.Center,
                     modifier = Modifier.weight(1f),
                 )
@@ -487,13 +490,20 @@ private fun CalendarMonthGrid(
         ) {
             itemsIndexed(
                 items = cells,
-                key = { index, cell -> cell.date?.let { "${it.year}-${it.month}-${it.day}-${cell.position}" } ?: "empty-$index" },
+                key = { index, cell ->
+                    cell.date?.let { "${it.year}-${it.month}-${it.day}-${cell.position}" } ?: "empty-$index"
+                },
             ) { _, cell ->
                 val date = cell.date
                 if (date == null) {
                     Spacer(Modifier.aspectRatio(1f))
                 } else {
-                    val range = if (selectedStart != null && selectedEnd != null) PersianDateRange.ordered(selectedStart, selectedEnd) else null
+                    val range = if (selectedStart != null && selectedEnd != null) {
+                        PersianDateRange.ordered(selectedStart, selectedEnd)
+                    } else {
+                        null
+                    }
+
                     DayCell(
                         date = date,
                         isCurrentMonth = cell.isCurrentMonth,
@@ -745,7 +755,9 @@ private fun PickerFooter(
 
             Spacer(Modifier.weight(1f))
 
-            TextButton(onClick = onCancel) { Text(config.strings.cancel) }
+            TextButton(onClick = onCancel) {
+                Text(config.strings.cancel)
+            }
 
             Spacer(Modifier.width(8.dp))
 

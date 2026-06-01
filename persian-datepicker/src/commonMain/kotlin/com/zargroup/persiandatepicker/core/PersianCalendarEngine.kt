@@ -2,9 +2,10 @@ package com.zargroup.persiandatepicker.core
 
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.todayIn
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 /**
  * Pure Kotlin Persian/Jalali calendar engine.
@@ -40,13 +41,15 @@ public object PersianCalendarEngine {
 
     public fun dayOfWeek(date: PersianDate): DayOfWeek = toGregorian(date).dayOfWeek
 
-    public fun dayOfWeek(year: Int, month: Int, day: Int): DayOfWeek = dayOfWeek(PersianDate(year, month, day))
+    public fun dayOfWeek(year: Int, month: Int, day: Int): DayOfWeek =
+        dayOfWeek(PersianDate(year, month, day))
 
     public fun monthLength(year: Int, month: Int): Int {
         require(isYearSupported(year)) {
             "Persian year $year is outside supported range ${supportedYearRange.first}..${supportedYearRange.last}"
         }
         require(month in 1..12) { "month must be in 1..12 but was $month" }
+
         return when (month) {
             in 1..6 -> 31
             in 7..11 -> 30
@@ -67,19 +70,26 @@ public object PersianCalendarEngine {
         return jalCal(year).leap == 0
     }
 
-    public fun fromGregorianOrNull(date: LocalDate): PersianDate? = runCatching { fromGregorian(date) }.getOrNull()
+    public fun fromGregorianOrNull(date: LocalDate): PersianDate? =
+        runCatching { fromGregorian(date) }.getOrNull()
 
+    @OptIn(ExperimentalTime::class)
     public fun today(timeZone: TimeZone = TimeZone.currentSystemDefault()): PersianDate {
-        return fromGregorian(Clock.System.now().toLocalDateTime(timeZone).date)
+        return fromGregorian(Clock.System.todayIn(timeZone))
     }
 
     internal fun persianToJulianDay(year: Int, month: Int, day: Int): Int {
         require(month in 1..12) { "month must be in 1..12 but was $month" }
-        require(day in 1..monthLength(year, month)) { "day $day is not valid for $year/$month" }
+        require(day in 1..monthLength(year, month)) {
+            "day $day is not valid for $year/$month"
+        }
 
         val calibration = jalCal(year)
         return gregorianToJulianDay(calibration.gregorianYear, 3, calibration.marchDay) +
-            (month - 1) * 31 - truncDiv(month, 7) * (month - 7) + day - 1
+            (month - 1) * 31 -
+            truncDiv(month, 7) * (month - 7) +
+            day -
+            1
     }
 
     private fun julianDayToPersian(jdn: Int): Triple<Int, Int, Int> {
@@ -122,12 +132,15 @@ public object PersianCalendarEngine {
             val currentBreak = breaks[index]
             jump = currentBreak - previousBreak
             if (year < currentBreak) break
+
             leapJ += truncDiv(jump, 33) * 8 + truncDiv(jsMod(jump, 33), 4)
             previousBreak = currentBreak
         }
 
         var yearsSinceBreak = year - previousBreak
-        leapJ += truncDiv(yearsSinceBreak, 33) * 8 + truncDiv(jsMod(yearsSinceBreak, 33) + 3, 4)
+
+        leapJ += truncDiv(yearsSinceBreak, 33) * 8 +
+            truncDiv(jsMod(yearsSinceBreak, 33) + 3, 4)
 
         if (jsMod(jump, 33) == 4 && jump - yearsSinceBreak == 4) {
             leapJ += 1
@@ -136,10 +149,12 @@ public object PersianCalendarEngine {
         val leapG = truncDiv(gregorianYear, 4) -
             truncDiv((truncDiv(gregorianYear, 100) + 1) * 3, 4) -
             150
+
         val marchDay = 20 + leapJ - leapG
 
         if (jump - yearsSinceBreak < 6) {
-            yearsSinceBreak = yearsSinceBreak - jump + truncDiv(jump + 4, 33) * 33
+            yearsSinceBreak =
+                yearsSinceBreak - jump + truncDiv(jump + 4, 33) * 33
         }
 
         var leap = jsMod(jsMod(yearsSinceBreak + 1, 33) - 1, 4)
@@ -155,18 +170,24 @@ public object PersianCalendarEngine {
     private fun gregorianToJulianDay(year: Int, month: Int, day: Int): Int {
         return truncDiv((year + truncDiv(month - 8, 6) + 100100) * 1461, 4) +
             truncDiv(153 * jsMod(month + 9, 12) + 2, 5) +
-            day - 34840408 -
-            truncDiv(truncDiv(year + 100100 + truncDiv(month - 8, 6), 100) * 3, 4) +
+            day -
+            34840408 -
+            truncDiv(
+                truncDiv(year + 100100 + truncDiv(month - 8, 6), 100) * 3,
+                4,
+            ) +
             752
     }
 
     private fun julianDayToGregorianParts(jdn: Int): Triple<Int, Int, Int> {
         var j = 4 * jdn + 139361631
         j += truncDiv(truncDiv(4 * jdn + 183187720, 146097) * 3, 4) * 4 - 3908
+
         val i = truncDiv(jsMod(j, 1461), 4) * 5 + 308
         val day = truncDiv(jsMod(i, 153), 5) + 1
         val month = jsMod(truncDiv(i, 153), 12) + 1
         val year = truncDiv(j, 1461) - 100100 + truncDiv(8 - month, 6)
+
         return Triple(year, month, day)
     }
 
@@ -190,4 +211,5 @@ internal fun floorDiv(value: Int, divisor: Int): Int {
 
 private fun truncDiv(value: Int, divisor: Int): Int = value / divisor
 
-private fun jsMod(value: Int, mod: Int): Int = value - truncDiv(value, mod) * mod
+private fun jsMod(value: Int, mod: Int): Int =
+    value - truncDiv(value, mod) * mod

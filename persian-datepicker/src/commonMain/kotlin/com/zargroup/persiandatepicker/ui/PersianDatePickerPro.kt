@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
@@ -73,7 +74,11 @@ import com.zargroup.persiandatepicker.core.PersianDateRange
 import com.zargroup.persiandatepicker.core.PersianYearMonth
 import com.zargroup.persiandatepicker.core.toDigitString
 
-private enum class ProPickerMode { Day, Month, Year }
+private enum class ProPickerMode {
+    Day,
+    Month,
+    Year,
+}
 
 /**
  * Premium, production-oriented single-date dialog.
@@ -255,7 +260,9 @@ public fun PersianDatePickerPro(
                                 mode = ProPickerMode.Day
                             }
                         }
+
                         is DatePickerQuickAction.ClearSelection -> state.clearSelection()
+
                         is DatePickerQuickAction.JumpToDate -> {
                             val target = action.targetDateProvider()
                             if (target != null) {
@@ -329,7 +336,9 @@ public fun PersianDateRangePickerPro(
                 onCancel = onCancel,
                 onClear = { state.clearSelection() },
                 onToday = {
-                    config.constraints.nearestValidOrNull(today)?.let { state.applyTap(it, config.constraints, config.selectionPolicy) }
+                    config.constraints.nearestValidOrNull(today)?.let {
+                        state.applyTap(it, config.constraints, config.selectionPolicy)
+                    }
                 },
                 onQuickAction = { action ->
                     when (action) {
@@ -338,7 +347,9 @@ public fun PersianDateRangePickerPro(
                                 state.applyTap(it, config.constraints, config.selectionPolicy)
                             }
                         }
+
                         is DatePickerQuickAction.ClearSelection -> state.clearSelection()
+
                         is DatePickerQuickAction.JumpToDate -> {
                             val target = action.targetDateProvider()
                             if (target != null) {
@@ -369,11 +380,12 @@ private fun ProPickerFrame(
     layoutOptions: DatePickerLayoutOptions,
     colors: PersianDatePickerColors,
     modeSwitchingEnabled: Boolean,
-    content: @Composable Column.() -> Unit,
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
         val expanded = layoutOptions.panelSize == DatePickerPanelSize.Expanded ||
             (layoutOptions.panelSize == DatePickerPanelSize.Adaptive && maxWidth >= 760.dp)
+
         val panelWidth = when (layoutOptions.panelSize) {
             DatePickerPanelSize.Expanded -> 760.dp
             DatePickerPanelSize.Compact -> 360.dp
@@ -389,7 +401,10 @@ private fun ProPickerFrame(
             color = colors.containerColor,
             tonalElevation = 6.dp,
             shadowElevation = 18.dp,
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.42f)),
+            border = BorderStroke(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.42f),
+            ),
         ) {
             Column(
                 modifier = Modifier
@@ -418,6 +433,7 @@ private fun ProPickerFrame(
                     colors = colors,
                     modeSwitchingEnabled = modeSwitchingEnabled,
                 )
+
                 content()
             }
         }
@@ -456,6 +472,7 @@ private fun ProHeroHeader(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
+
                 AnimatedVisibility(
                     visible = layoutOptions.showSelectedSummary,
                     enter = fadeIn(tween(180)),
@@ -479,7 +496,9 @@ private fun ProHeroHeader(
         }
 
         Card(
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.72f)),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.72f),
+            ),
             shape = RoundedCornerShape(24.dp),
         ) {
             Row(
@@ -488,7 +507,9 @@ private fun ProHeroHeader(
                     .padding(horizontal = 8.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                TextButton(onClick = onPreviousMonth) { Text("‹", style = MaterialTheme.typography.headlineSmall) }
+                TextButton(onClick = onPreviousMonth) {
+                    Text("‹", style = MaterialTheme.typography.headlineSmall)
+                }
 
                 Row(
                     modifier = Modifier.weight(1f),
@@ -500,7 +521,9 @@ private fun ProHeroHeader(
                         enabled = modeSwitchingEnabled,
                         label = { Text(month, fontWeight = FontWeight.SemiBold) },
                     )
+
                     Spacer(Modifier.width(8.dp))
+
                     ElevatedAssistChip(
                         onClick = { onModeChange(ProPickerMode.Year) },
                         enabled = modeSwitchingEnabled,
@@ -508,7 +531,9 @@ private fun ProHeroHeader(
                     )
                 }
 
-                TextButton(onClick = onNextMonth) { Text("›", style = MaterialTheme.typography.headlineSmall) }
+                TextButton(onClick = onNextMonth) {
+                    Text("›", style = MaterialTheme.typography.headlineSmall)
+                }
             }
         }
 
@@ -527,6 +552,7 @@ private fun ProModeTabs(
     val dayLabel = if (config.digitMode == DigitMode.Persian) "روز" else "Day"
     val monthLabel = if (config.digitMode == DigitMode.Persian) "ماه" else "Month"
     val yearLabel = if (config.digitMode == DigitMode.Persian) "سال" else "Year"
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -535,14 +561,36 @@ private fun ProModeTabs(
             .padding(4.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        ProTab(label = dayLabel, selected = mode == ProPickerMode.Day, onClick = { onModeChange(ProPickerMode.Day) }, modifier = Modifier.weight(1f))
-        ProTab(label = monthLabel, selected = mode == ProPickerMode.Month, onClick = { onModeChange(ProPickerMode.Month) }, modifier = Modifier.weight(1f))
-        ProTab(label = yearLabel, selected = mode == ProPickerMode.Year, onClick = { onModeChange(ProPickerMode.Year) }, modifier = Modifier.weight(1f))
+        ProTab(
+            label = dayLabel,
+            selected = mode == ProPickerMode.Day,
+            onClick = { onModeChange(ProPickerMode.Day) },
+            modifier = Modifier.weight(1f),
+        )
+
+        ProTab(
+            label = monthLabel,
+            selected = mode == ProPickerMode.Month,
+            onClick = { onModeChange(ProPickerMode.Month) },
+            modifier = Modifier.weight(1f),
+        )
+
+        ProTab(
+            label = yearLabel,
+            selected = mode == ProPickerMode.Year,
+            onClick = { onModeChange(ProPickerMode.Year) },
+            modifier = Modifier.weight(1f),
+        )
     }
 }
 
 @Composable
-private fun ProTab(label: String, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
+private fun ProTab(
+    label: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val background by animateColorAsState(
         targetValue = if (selected) MaterialTheme.colorScheme.primary else Color.Transparent,
         animationSpec = tween(160),
@@ -553,6 +601,7 @@ private fun ProTab(label: String, selected: Boolean, onClick: () -> Unit, modifi
         animationSpec = tween(160),
         label = "tab-fg",
     )
+
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(14.dp))
@@ -561,7 +610,11 @@ private fun ProTab(label: String, selected: Boolean, onClick: () -> Unit, modifi
             .padding(vertical = 9.dp),
         contentAlignment = Alignment.Center,
     ) {
-        Text(label, color = content, fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium)
+        Text(
+            text = label,
+            color = content,
+            fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
+        )
     }
 }
 
@@ -596,6 +649,7 @@ private fun ProResponsiveRangeCalendar(
                     modifier = Modifier.weight(1f),
                     onDateClick = onDateClick,
                 )
+
                 ProCalendarGrid(
                     visibleMonth = visibleMonth.plusMonths(1),
                     selectedStart = selectedStart,
@@ -639,28 +693,46 @@ private fun ProCalendarGrid(
     val cells = remember(visibleMonth, config.weekConfiguration, config.showAdjacentMonthDays) {
         buildCalendarMonthCells(visibleMonth, config.weekConfiguration, config.showAdjacentMonthDays)
     }
+
     val cellGap = when (layoutOptions.density) {
         DatePickerVisualDensity.Compact -> 5.dp
         DatePickerVisualDensity.Comfortable -> 7.dp
         DatePickerVisualDensity.Spacious -> 10.dp
     }
 
-    Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(cellGap)) {
-        Row(horizontalArrangement = Arrangement.spacedBy(cellGap), modifier = Modifier.fillMaxWidth()) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(cellGap),
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(cellGap),
+            modifier = Modifier.fillMaxWidth(),
+        ) {
             config.weekConfiguration.orderedDays.forEach { day ->
                 Text(
                     modifier = Modifier.weight(1f),
-                    text = CalendarTextRepository.weekdayShort(day, config.digitMode, config.weekConfiguration.startDay),
+                    text = CalendarTextRepository.weekdayShort(
+                        day,
+                        config.digitMode,
+                        config.weekConfiguration.startDay,
+                    ),
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Bold,
-                    color = if (config.weekConfiguration.isWeekend(day)) colors.weekendContentColor else MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = if (config.weekConfiguration.isWeekend(day)) {
+                        colors.weekendContentColor
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
                 )
             }
         }
 
         cells.chunked(7).forEach { row ->
-            Row(horizontalArrangement = Arrangement.spacedBy(cellGap), modifier = Modifier.fillMaxWidth()) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(cellGap),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
                 row.forEach { cell ->
                     ProDayCell(
                         cell = cell,
@@ -697,6 +769,7 @@ private fun ProDayCell(
         selectedStart != null -> PersianDateRange(selectedStart, selectedStart)
         else -> null
     }
+
     val isSelected = date != null && selectedRange?.contains(date) == true
     val isEdge = date != null && (date == selectedRange?.start || date == selectedRange?.endInclusive)
     val isToday = date != null && date == highlightedDate
@@ -710,6 +783,7 @@ private fun ProDayCell(
         isSelected -> colors.rangeContainerColor
         else -> colors.dayContainerColor.copy(alpha = if (isAdjacent) 0.20f else 0.55f)
     }
+
     val targetText = when {
         !isSelectable -> colors.disabledContentColor
         isEdge -> colors.selectedDayContentColor
@@ -717,6 +791,7 @@ private fun ProDayCell(
         config.weekConfiguration.isWeekend(cell.dayOfWeek) -> colors.weekendContentColor
         else -> colors.dayContentColor
     }
+
     val bg by animateColorAsState(targetBg, tween(140), label = "day-bg")
     val fg by animateColorAsState(targetText, tween(140), label = "day-fg")
     val radius by animateDpAsState(if (isEdge) 18.dp else 15.dp, tween(140), label = "day-radius")
@@ -727,8 +802,16 @@ private fun ProDayCell(
             .aspectRatio(1f)
             .clip(shape)
             .background(bg)
-            .then(if (isToday && !isEdge) Modifier.border(1.5.dp, colors.todayBorderColor, shape) else Modifier)
-            .clickable(enabled = isTapEnabled, role = Role.Button) { if (date != null) onDateClick(date) }
+            .then(
+                if (isToday && !isEdge) {
+                    Modifier.border(1.5.dp, colors.todayBorderColor, shape)
+                } else {
+                    Modifier
+                },
+            )
+            .clickable(enabled = isTapEnabled, role = Role.Button) {
+                if (date != null) onDateClick(date)
+            }
             .semantics {
                 if (date != null) {
                     contentDescription = buildString {
@@ -742,15 +825,20 @@ private fun ProDayCell(
         contentAlignment = Alignment.Center,
     ) {
         if (date != null) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
                 Text(
                     text = date.day.toDigitString(config.digitMode),
                     color = fg,
                     fontWeight = if (isSelected || isToday) FontWeight.ExtraBold else FontWeight.SemiBold,
                     style = MaterialTheme.typography.bodyMedium,
                 )
+
                 if (event != null) {
                     Spacer(Modifier.height(3.dp))
+
                     Box(
                         modifier = Modifier
                             .size(if (isSelected) 4.dp else 5.dp)
@@ -772,9 +860,13 @@ private fun ProMonthSelector(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         config.monthFormatter.labels(config.digitMode).chunked(3).forEachIndexed { rowIndex, row ->
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
                 row.forEachIndexed { columnIndex, label ->
                     val month = rowIndex * 3 + columnIndex + 1
+
                     ProSelectorTile(
                         label = label,
                         selected = month == selectedMonth,
@@ -796,6 +888,7 @@ private fun ProYearSelector(
     onYearSelected: (Int) -> Unit,
 ) {
     val scroll = rememberScrollState()
+
     Column(
         modifier = Modifier
             .height(308.dp)
@@ -803,7 +896,10 @@ private fun ProYearSelector(
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         config.yearRange.chunked(3).forEach { row ->
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
                 row.forEach { year ->
                     ProSelectorTile(
                         label = config.yearFormatter.format(year, config.digitMode),
@@ -813,7 +909,10 @@ private fun ProYearSelector(
                         onClick = { onYearSelected(year) },
                     )
                 }
-                repeat(3 - row.size) { Spacer(Modifier.weight(1f)) }
+
+                repeat(3 - row.size) {
+                    Spacer(Modifier.weight(1f))
+                }
             }
         }
     }
@@ -828,15 +927,25 @@ private fun ProSelectorTile(
     onClick: () -> Unit,
 ) {
     val bg by animateColorAsState(
-        if (selected) colors.selectedDayContainerColor else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.56f),
-        tween(140),
+        targetValue = if (selected) {
+            colors.selectedDayContainerColor
+        } else {
+            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.56f)
+        },
+        animationSpec = tween(140),
         label = "selector-bg",
     )
+
     val fg by animateColorAsState(
-        if (selected) colors.selectedDayContentColor else MaterialTheme.colorScheme.onSurface,
-        tween(140),
+        targetValue = if (selected) {
+            colors.selectedDayContentColor
+        } else {
+            MaterialTheme.colorScheme.onSurface
+        },
+        animationSpec = tween(140),
         label = "selector-fg",
     )
+
     Box(
         modifier = modifier
             .height(54.dp)
@@ -846,14 +955,25 @@ private fun ProSelectorTile(
             .padding(horizontal = 8.dp),
         contentAlignment = Alignment.Center,
     ) {
-        Text(label, color = fg, fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium, textAlign = TextAlign.Center)
+        Text(
+            text = label,
+            color = fg,
+            fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
+            textAlign = TextAlign.Center,
+        )
     }
 }
 
 @Composable
-private fun ProRangeProgress(start: PersianDate?, end: PersianDate?, config: DatePickerConfig) {
+private fun ProRangeProgress(
+    start: PersianDate?,
+    end: PersianDate?,
+    config: DatePickerConfig,
+) {
     Card(
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.48f)),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.48f),
+        ),
         shape = RoundedCornerShape(22.dp),
     ) {
         Row(
@@ -863,18 +983,46 @@ private fun ProRangeProgress(start: PersianDate?, end: PersianDate?, config: Dat
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            RangePart(config.strings.rangeStartLabel, start?.format(config.dateFormatter, config.digitMode) ?: "—")
-            VerticalDivider(modifier = Modifier.height(34.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
-            RangePart(config.strings.rangeEndLabel, end?.format(config.dateFormatter, config.digitMode) ?: "—")
+            RangePart(
+                label = config.strings.rangeStartLabel,
+                value = start?.format(config.dateFormatter, config.digitMode) ?: "—",
+            )
+
+            VerticalDivider(
+                modifier = Modifier.height(34.dp),
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+            )
+
+            RangePart(
+                label = config.strings.rangeEndLabel,
+                value = end?.format(config.dateFormatter, config.digitMode) ?: "—",
+            )
         }
     }
 }
 
 @Composable
-private fun RowScope.RangePart(label: String, value: String) {
-    Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        Text(label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Text(value, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+private fun RowScope.RangePart(
+    label: String,
+    value: String,
+) {
+    Column(
+        modifier = Modifier.weight(1f),
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Bold,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
     }
 }
 
@@ -924,19 +1072,31 @@ private fun ProFooter(
                     Text(action.label(config.strings))
                 }
             }
-            TextButton(onClick = onClear) { Text(config.strings.clearSelection) }
-            TextButton(onClick = onCancel) { Text(config.strings.cancel) }
+
+            TextButton(onClick = onClear) {
+                Text(config.strings.clearSelection)
+            }
+
+            TextButton(onClick = onCancel) {
+                Text(config.strings.cancel)
+            }
+
             Button(
                 onClick = onConfirm,
                 enabled = confirmEnabled,
                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 3.dp),
-            ) { Text(config.strings.confirm) }
+            ) {
+                Text(config.strings.confirm)
+            }
         }
     }
 }
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun ProEventLegend(config: DatePickerConfig) {
+private fun ProEventLegend(
+    config: DatePickerConfig,
+) {
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
@@ -957,6 +1117,7 @@ private fun ProEventLegend(config: DatePickerConfig) {
                         .clip(CircleShape)
                         .background(item.color),
                 )
+
                 Text(
                     text = item.label,
                     style = MaterialTheme.typography.labelMedium,
