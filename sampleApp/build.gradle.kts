@@ -94,11 +94,11 @@ kotlin {
 }
 
 android {
-    namespace = "com.zargroup.persiandatepicker.sample"
+    namespace = "com.msa.persiandatepicker.sample"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.zargroup.persiandatepicker.sample"
+        applicationId = "com.msa.persiandatepicker.sample"
         minSdk = 26
         targetSdk = 36
         versionCode = 1
@@ -108,7 +108,7 @@ android {
 
 compose.desktop {
     application {
-        mainClass = "com.zargroup.persiandatepicker.sample.MainKt"
+        mainClass = "com.msa.persiandatepicker.sample.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)

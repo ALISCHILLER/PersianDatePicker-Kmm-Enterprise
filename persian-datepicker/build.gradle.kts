@@ -56,12 +56,14 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            api(libs.kotlinx.datetime)
+
             api(compose.runtime)
+            api(compose.runtimeSaveable)
             api(compose.foundation)
             api(compose.animation)
             api(compose.material3)
             api(compose.ui)
-            api(libs.kotlinx.datetime)
         }
 
         commonTest.dependencies {
@@ -71,7 +73,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.zargroup.persiandatepicker"
+    namespace = "com.msa.persiandatepicker"
     compileSdk = 36
 
     defaultConfig {
@@ -98,7 +100,7 @@ publishing {
         pom {
             name.set("Persian DatePicker KMM")
             description.set("A publish-ready Persian/Jalali DatePicker library for Compose Multiplatform on Android, iOS, Desktop, JS, and Wasm.")
-            url.set("https://github.com/zargroup/persian-datepicker-kmm")
+            url.set("https://github.com/msa/persian-datepicker-kmm")
             licenses {
                 license {
                     name.set("GNU General Public License, Version 3.0")
@@ -108,14 +110,14 @@ publishing {
             }
             developers {
                 developer {
-                    id.set("zargroup")
-                    name.set("ZarGroup IT")
+                    id.set("msa")
+                    name.set("MSA")
                 }
             }
             scm {
-                connection.set("scm:git:https://github.com/zargroup/persian-datepicker-kmm.git")
-                developerConnection.set("scm:git:ssh://git@github.com/zargroup/persian-datepicker-kmm.git")
-                url.set("https://github.com/zargroup/persian-datepicker-kmm")
+                connection.set("scm:git:https://github.com/msa/persian-datepicker-kmm.git")
+                developerConnection.set("scm:git:ssh://git@github.com/msa/persian-datepicker-kmm.git")
+                url.set("https://github.com/msa/persian-datepicker-kmm")
             }
         }
     }

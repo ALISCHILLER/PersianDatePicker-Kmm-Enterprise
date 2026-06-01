@@ -18,7 +18,7 @@
 ## Suggested Maven coordinates
 
 ```kotlin
-group = "com.zargroup"
+group = "com.msa"
 artifact = "persian-datepicker-compose-multiplatform"
 version = "1.0.0"
 ```

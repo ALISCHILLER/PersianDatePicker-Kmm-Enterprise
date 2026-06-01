@@ -11,7 +11,7 @@ The project is intended to become a reusable multi-platform library, so tests fo
 Location:
 
 ```text
-persian-datepicker/src/commonTest/kotlin/com/zargroup/persiandatepicker/core
+persian-datepicker/src/commonTest/kotlin/com/msa/persiandatepicker/core
 ```
 
 Coverage:
@@ -45,7 +45,7 @@ PersianDateRangeContractTest.kt
 Location:
 
 ```text
-persian-datepicker/src/commonTest/kotlin/com/zargroup/persiandatepicker/ui
+persian-datepicker/src/commonTest/kotlin/com/msa/persiandatepicker/ui
 ```
 
 Coverage:

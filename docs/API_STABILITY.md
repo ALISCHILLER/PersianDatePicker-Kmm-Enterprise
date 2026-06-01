@@ -2,8 +2,8 @@
 
 The public API is organized into two packages:
 
-- `com.zargroup.persiandatepicker.core`: stable, platform-independent date models and Jalali conversion logic.
-- `com.zargroup.persiandatepicker.ui`: Compose Multiplatform UI, configuration, state, colors, and selection policy.
+- `com.msa.persiandatepicker.core`: stable, platform-independent date models and Jalali conversion logic.
+- `com.msa.persiandatepicker.ui`: Compose Multiplatform UI, configuration, state, colors, and selection policy.
 
 ## Versioning
 

@@ -2,8 +2,8 @@
 
 ## Packages
 
-- `com.zargroup.persiandatepicker.core`: pure Jalali date logic.
-- `com.zargroup.persiandatepicker.ui`: Compose Multiplatform UI, state, config, and design system.
+- `com.msa.persiandatepicker.core`: pure Jalali date logic.
+- `com.msa.persiandatepicker.ui`: Compose Multiplatform UI, state, config, and design system.
 
 ## Domain model
 

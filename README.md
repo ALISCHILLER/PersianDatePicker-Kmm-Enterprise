@@ -56,7 +56,7 @@ PersianDatePickerKmmEnterpriseUltra/
 ├── persian-datepicker/              # Publishable KMM/CMP library
 │   ├── build.gradle.kts
 │   └── src/
-│       ├── commonMain/kotlin/com/zargroup/persiandatepicker/
+│       ├── commonMain/kotlin/com/msa/persiandatepicker/
 │       │   ├── PersianDatePickerApi.kt
 │       │   ├── core/                # Pure Jalali calendar engine and models
 │       │   └── ui/                  # Compose UI, state, config, diagnostics
@@ -80,7 +80,7 @@ PersianDatePickerKmmEnterpriseUltra/
 
 ```kotlin
 dependencies {
-    implementation("com.zargroup.persiandatepicker:persian-datepicker:2.4.0")
+    implementation("com.msa.persiandatepicker:persian-datepicker:2.4.0")
 }
 ```
 

@@ -22,7 +22,7 @@ persian-datepicker/build/staging-deploy
 ## Publication coordinates
 
 ```text
-groupId:    com.zargroup.persiandatepicker
+groupId:    com.msa.persiandatepicker
 artifactId: persian-datepicker
 version:    2.4.0
 ```

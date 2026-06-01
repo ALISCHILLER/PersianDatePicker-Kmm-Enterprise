@@ -13,9 +13,9 @@ com.msa.calendar.RangeCalendarScreen
 New package examples:
 
 ```kotlin
-com.zargroup.persiandatepicker.core.PersianDate
-com.zargroup.persiandatepicker.ui.PersianDatePickerProDialog
-com.zargroup.persiandatepicker.ui.PersianDateRangePickerProDialog
+com.msa.persiandatepicker.core.PersianDate
+com.msa.persiandatepicker.ui.PersianDatePickerProDialog
+com.msa.persiandatepicker.ui.PersianDateRangePickerProDialog
 ```
 
 ## Date model

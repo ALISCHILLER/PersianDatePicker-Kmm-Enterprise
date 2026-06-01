@@ -8,8 +8,8 @@ The sample app supports both browser targets used by Compose Multiplatform:
 Both entry points live in the sample app:
 
 ```text
-sampleApp/src/jsMain/kotlin/com/zargroup/persiandatepicker/sample/Main.kt
-sampleApp/src/wasmJsMain/kotlin/com/zargroup/persiandatepicker/sample/Main.kt
+sampleApp/src/jsMain/kotlin/com/msa/persiandatepicker/sample/Main.kt
+sampleApp/src/wasmJsMain/kotlin/com/msa/persiandatepicker/sample/Main.kt
 ```
 
 Both entry points launch the same shared UI and bind it to an explicit host element:

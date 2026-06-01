@@ -7,6 +7,6 @@ Before publishing to Maven Central or using this component in a closed-source co
 Current publish metadata:
 
 - License: GNU General Public License, Version 3.0
-- Artifact group: `com.zargroup.persiandatepicker`
+- Artifact group: `com.msa.persiandatepicker`
 - Artifact module: `persian-datepicker`
 - Version: `1.4.0`

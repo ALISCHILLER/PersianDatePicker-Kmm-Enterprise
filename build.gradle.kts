@@ -8,6 +8,6 @@ plugins {
 }
 
 allprojects {
-    group = "com.zargroup.persiandatepicker"
+    group = "com.msa.persiandatepicker"
     version = "2.4.0"
 }
